@@ -34,12 +34,18 @@ public:
 	UFUNCTION()
 	void OnStageTriggerBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	FORCEINLINE int32 GetStageLevel() const { return CurrentStageLevel; }
+	FORCEINLINE void SetStageLevel(int32 NewStageLevel) { CurrentStageLevel = NewStageLevel; }
+
 protected:
 	UPROPERTY(VisibleAnywhere, Category = Stage)
 	TObjectPtr<class UStaticMeshComponent> StageMesh;
 
 	UPROPERTY(VisibleAnywhere, Category = Stage)
 	TObjectPtr<class UBoxComponent> StageTriggerBox;
+
+	UPROPERTY(VisibleAnywhere, Category = Stage)
+	int32 CurrentStageLevel;
 #pragma endregion
 
 #pragma region Gate

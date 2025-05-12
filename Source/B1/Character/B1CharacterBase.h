@@ -38,6 +38,9 @@ public:
 
 #pragma region CharacterStat
 public:
+	int32 GetLevel();
+	void SetLevel(int32 InNewLevel);
+
 	void ApplyStat(const FB1CharacterStat& BaseStat, const FB1CharacterStat& ModifierStat);
 
 	// Inherited via IB1ItemInterface

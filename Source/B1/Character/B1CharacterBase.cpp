@@ -161,6 +161,16 @@ float AB1CharacterBase::TakeDamage(float DamageAmount, FDamageEvent const& Damag
 	return DamageAmount;
 }
 
+int32 AB1CharacterBase::GetLevel()
+{
+	return StatComponent->GetCurrentLevel();
+}
+
+void AB1CharacterBase::SetLevel(int32 InNewLevel)
+{
+	return StatComponent->SetupLevel(InNewLevel);
+}
+
 void AB1CharacterBase::ApplyStat(const FB1CharacterStat& BaseStat, const FB1CharacterStat& ModifierStat)
 {
 	float MovementSpeed = (BaseStat + ModifierStat).MovementSpeed;

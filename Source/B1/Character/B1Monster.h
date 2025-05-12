@@ -5,12 +5,13 @@
 #include "CoreMinimal.h"
 #include "Character/B1CharacterBase.h"
 #include "Interface/B1AIAttackInterface.h"
+#include "Engine/StreamableManager.h"
 #include "B1Monster.generated.h"
 
 /**
  * 
  */
-UCLASS()
+UCLASS(config = Monster)
 class B1_API AB1Monster : public AB1CharacterBase, public IB1AIAttackInterface
 {
 	GENERATED_BODY()
@@ -26,6 +27,10 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+public:
+	virtual void PostInitializeComponents() override;
+	void MonsterMeshLoadCompleted();
 
 public: 
 	virtual void SetDead() override;
@@ -44,4 +49,10 @@ protected:
 	float DeadEventDelayTime = 5.0f;
 
 	FAIAttackFinished OnAttackFinished;
+
+protected:
+	UPROPERTY(Config)
+	TArray<FSoftObjectPath> MonsterMeshes;
+
+	TSharedPtr<FStreamableHandle> MonsterMeshHandle;
 };

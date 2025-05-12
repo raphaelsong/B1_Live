@@ -12,6 +12,8 @@
 AB1StageGimmick::AB1StageGimmick()
 {
 	// Stage Section
+	CurrentStageLevel = 0;
+
 	StageMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StageMesh"));
 	SetRootComponent(StageMesh);
 
@@ -115,7 +117,13 @@ void AB1StageGimmick::OnGateTriggerBoxBeginOverlap(UPrimitiveComponent* Overlapp
 	if (!bResult)
 	{
 		FTransform NewTransform(NewLocation);
-		AB1StageGimmick* NewGimmick = GetWorld()->SpawnActor<AB1StageGimmick>(AB1StageGimmick::StaticClass(), NewTransform);
+		AB1StageGimmick* NewGimmick = GetWorld()->SpawnActorDeferred<AB1StageGimmick>(AB1StageGimmick::StaticClass(), NewTransform);
+
+		if (NewGimmick)
+		{
+			NewGimmick->SetStageLevel(CurrentStageLevel + 1);
+			NewGimmick->FinishSpawning(NewTransform);
+		}
 	}
 }
 
@@ -195,10 +203,12 @@ void AB1StageGimmick::SetChooseNext()
 void AB1StageGimmick::OnMonsterSpawn()
 {
 	const FTransform SpawnTransform(GetActorLocation() + FVector::UpVector * 88.0f);
-	AB1Monster* NewMonster = GetWorld()->SpawnActor<AB1Monster>(MonsterClass, SpawnTransform);
+	AB1Monster* NewMonster = GetWorld()->SpawnActorDeferred<AB1Monster>(MonsterClass, SpawnTransform);
 	if (NewMonster)
 	{
 		NewMonster->OnDestroyed.AddDynamic(this, &AB1StageGimmick::OnMonsterDestroyed);
+		NewMonster->SetLevel(CurrentStageLevel);
+		NewMonster->FinishSpawning(SpawnTransform);
 	}
 }
 
@@ -212,13 +222,21 @@ void AB1StageGimmick::SpawnRewardBoxes()
 	for (const auto& RewardBoxLocation : RewardBoxLocations)
 	{
 		FTransform SpawnTranform(GetActorLocation() + RewardBoxLocation.Value + FVector(0.0f, 0.0f, 30.0f));
-		AB1ItemBox* RewardBoxActor = GetWorld()->SpawnActor<AB1ItemBox>(RewardBoxClass, SpawnTranform);
+		AB1ItemBox* RewardBoxActor = GetWorld()->SpawnActorDeferred<AB1ItemBox>(RewardBoxClass, SpawnTranform);
 		if (RewardBoxActor)
 		{
 			RewardBoxActor->Tags.Add(RewardBoxLocation.Key);
 			RewardBoxActor->GetTriggerBox()->OnComponentBeginOverlap.AddDynamic(this, &AB1StageGimmick::OnRewardTriggerBoxBeginOverlap);
 
 			RewardBoxes.Add(RewardBoxActor);
+		}
+	}
+
+	for (const auto& RewardBox : RewardBoxes)
+	{
+		if (RewardBox.IsValid())
+		{
+			RewardBox.Get()->FinishSpawning(RewardBox.Get()->GetActorTransform());
 		}
 	}
 }
