@@ -10,6 +10,8 @@
 #include "GameData/B1CharacterStat.h"
 #include "GameData/B1CharacterStatComponent.h"
 #include "UI/B1PlayerHUDWidget.h"
+#include "Interface/B1GameInterface.h"
+#include "GameFramework/GameModeBase.h"
 
 AB1Player::AB1Player()
 {
@@ -80,6 +82,8 @@ void AB1Player::BeginPlay()
 		{
 			Subsystem->AddMappingContext(InputMappingContext, 0);
 		}
+
+		EnableInput(PlayerController);
 	}
 
 	B1PlayerHUDWidget = CreateWidget<UB1PlayerHUDWidget>(PlayerController, B1PlayerHUDWidgetClass);
@@ -115,6 +119,23 @@ void AB1Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(TurnAction, ETriggerEvent::Triggered, this, &ThisClass::Input_Turn);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+	}
+}
+
+void AB1Player::SetDead()
+{
+	Super::SetDead();
+
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (PlayerController)
+	{
+		DisableInput(PlayerController);
+	}
+
+	IB1GameInterface* B1GameInterface = Cast<IB1GameInterface>(GetWorld()->GetAuthGameMode());
+	if (B1GameInterface)
+	{
+		B1GameInterface->OnPlayerDead();
 	}
 }
 

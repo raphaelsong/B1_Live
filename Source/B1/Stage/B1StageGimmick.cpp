@@ -7,6 +7,8 @@
 #include "Engine/OverlapResult.h"
 #include "Character/B1Monster.h"
 #include "Item/B1ItemBox.h"
+#include "Interface/B1GameInterface.h"
+#include "GameFramework/GameModeBase.h"
 
 // Sets default values
 AB1StageGimmick::AB1StageGimmick()
@@ -214,6 +216,16 @@ void AB1StageGimmick::OnMonsterSpawn()
 
 void AB1StageGimmick::OnMonsterDestroyed(AActor* DestroyedActor)
 {
+	IB1GameInterface* B1GameInterface = Cast<IB1GameInterface>(GetWorld()->GetAuthGameMode());
+	if (B1GameInterface)
+	{
+		B1GameInterface->AddPlyerScore(1);
+		if (B1GameInterface->IsGameCleared())
+		{
+			return;
+		}
+	}
+
 	SetState(EStageState::REWARD);
 }
 

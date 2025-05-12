@@ -21,3 +21,18 @@ void AB1PlayerController::SetupInputComponent()
 
 	
 }
+
+void AB1PlayerController::GameScoreChanged(int32 NewScore)
+{
+	K2_OnScoreChanged(NewScore);
+}
+
+void AB1PlayerController::GameClear()
+{
+	K2_GameClear();
+}
+
+void AB1PlayerController::GameOver()
+{
+	K2_GameOver();
+}

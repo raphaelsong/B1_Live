@@ -22,4 +22,16 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
 
+public:
+	UFUNCTION(BlueprintImplementableEvent, Category = Game, Meta = (DisplayName = "OnScoreChangedCpp"))
+	void K2_OnScoreChanged(int32 NewScore);
+	UFUNCTION(BlueprintImplementableEvent, Category = Game, Meta = (DisplayName = "OnGameClearCpp"))
+	void K2_GameClear();
+	UFUNCTION(BlueprintImplementableEvent, Category = Game, Meta = (DisplayName = "OnGameOverCpp"))
+	void K2_GameOver();
+
+public:
+	void GameScoreChanged(int32 NewScore);
+	void GameClear();
+	void GameOver();
 };

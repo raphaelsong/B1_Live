@@ -31,6 +31,9 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+public:
+	virtual void SetDead() override;
+
 #pragma region InputSystem
 private:
 	void Input_Attack(const FInputActionValue& InputValue);
